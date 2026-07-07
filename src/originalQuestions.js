@@ -1281,4 +1281,693 @@ export const ORIGINAL_QUESTIONS = [
     studyTip:
       "Present perfect (have/has + past participle) is used for experiences/actions with NO specific time mentioned, or actions connecting past to present ('I have lived here for 5 years' = still living here). Past simple is used for actions completed at a SPECIFIC, stated time in the past ('last year', 'yesterday', 'in 2020'). A sentence combining present-tense verb forms with past-time markers (like option E: 'visit...yesterday') is a tense-agreement error.",
   },
+
+  /* ================= NEW BATCH: gap-filling questions ================= */
+
+  /* ---------------- GENERAL KNOWLEDGE (10) ---------------- */
+  {
+    id: "oq-g7",
+    subject: "general",
+    topic: "Istituzioni - Sistema parlamentare italiano",
+    question:
+      "In Italy's parliamentary system, who formally appoints the Prime Minister (Presidente del Consiglio)?",
+    options: [
+      "The President of the Republic",
+      "The Parliament directly via popular vote",
+      "The Prime Minister appoints themselves after winning an election",
+      "The Constitutional Court",
+      "The President of the Senate",
+    ],
+    correct: 0,
+    explanation:
+      "In Italy the President of the Republic formally appoints the Prime Minister, who must then obtain a vote of confidence from both houses of Parliament to actually govern. There is no direct popular election of the Prime Minister.",
+    studyTip:
+      "Italy is a parliamentary republic, not a presidential one: the Head of State (President of the Republic) is separate from the Head of Government (Prime Minister), and voters elect Parliament, not the PM directly.",
+  },
+  {
+    id: "oq-g8",
+    subject: "general",
+    topic: "Storia della scienza - Tavola periodica",
+    question:
+      "Which scientist is credited with formulating the modern periodic law and creating an early version of the periodic table that successfully predicted the properties of undiscovered elements?",
+    options: [
+      "Antoine Lavoisier",
+      "Dmitri Mendeleev",
+      "John Dalton",
+      "Marie Curie",
+      "Niels Bohr",
+    ],
+    correct: 1,
+    explanation:
+      "Dmitri Mendeleev published his periodic table in 1869, arranging elements by atomic weight and leaving gaps for elements not yet discovered, correctly predicting the properties of gallium and germanium before their discovery.",
+    studyTip:
+      "Watch out for Lavoisier (father of modern chemistry / conservation of mass) and Dalton (atomic theory) — both are famous chemistry-history figures but neither created the periodic table.",
+  },
+  {
+    id: "oq-g9",
+    subject: "general",
+    topic: "Letteratura - Letteratura russa",
+    question:
+      "Who wrote the novel 'Crime and Punishment', exploring the psychological turmoil of a man who commits murder?",
+    options: [
+      "Leo Tolstoy",
+      "Fyodor Dostoevsky",
+      "Anton Chekhov",
+      "Franz Kafka",
+      "Victor Hugo",
+    ],
+    correct: 1,
+    explanation:
+      "Fyodor Dostoevsky wrote 'Crime and Punishment' (1866), following Raskolnikov's psychological experience before and after murdering a pawnbroker.",
+    studyTip:
+      "Russian 19th-century literature (Dostoevsky, Tolstoy) recurs in IMAT general knowledge. Know at least one signature novel per author to avoid mixing them up — Tolstoy is best known for 'War and Peace' and 'Anna Karenina'.",
+  },
+  {
+    id: "oq-g10",
+    subject: "general",
+    topic: "Geografia - Monti e rilievi",
+    question:
+      "Mount Kilimanjaro, the highest peak in Africa, is located in which country?",
+    options: ["Kenya", "Tanzania", "Uganda", "Ethiopia", "South Africa"],
+    correct: 1,
+    explanation:
+      "Mount Kilimanjaro, Africa's highest peak at 5,895 m, is located in northeastern Tanzania, near the border with Kenya (which is why it is often mistakenly associated with Kenya).",
+    studyTip:
+      "Kilimanjaro is visible from Kenya and often photographed with Kenyan savannah in the foreground, which is why many people incorrectly place it in Kenya — but the mountain itself lies within Tanzania's borders.",
+  },
+  {
+    id: "oq-g11",
+    subject: "general",
+    topic: "Mitologia greca",
+    question:
+      "In Greek mythology, who is the king of the gods and ruler of Mount Olympus?",
+    options: ["Poseidon", "Hades", "Zeus", "Apollo", "Ares"],
+    correct: 2,
+    explanation:
+      "Zeus is the king of the Olympian gods, god of the sky and thunder, ruling from Mount Olympus. Poseidon (sea) and Hades (underworld) are his brothers but rule different domains.",
+    studyTip:
+      "Remember the three brothers' domains: Zeus = sky/Olympus (king), Poseidon = sea, Hades = underworld. Confusing these three is the most common mistake in Greek mythology questions.",
+  },
+  {
+    id: "oq-g12",
+    subject: "general",
+    topic: "Storia - Fine del Medioevo",
+    question:
+      "The fall of which empire in 1453, when Constantinople was captured by the Ottoman Turks, is traditionally used to mark the end of the Middle Ages?",
+    options: [
+      "The Holy Roman Empire",
+      "The Byzantine Empire",
+      "The Persian Empire",
+      "The Roman Empire (Western)",
+      "The Mongol Empire",
+    ],
+    correct: 1,
+    explanation:
+      "The Byzantine Empire (Eastern Roman Empire) fell in 1453 when Ottoman forces captured its capital, Constantinople. This event is a conventional marker for the end of the Middle Ages and the start of the Early Modern period.",
+    studyTip:
+      "Don't confuse this with the fall of the WESTERN Roman Empire in 476 CE (which marks the START of the Middle Ages) — the Byzantine (Eastern) Empire actually survived about 1000 years longer, until 1453.",
+  },
+  {
+    id: "oq-g13",
+    subject: "general",
+    topic: "Scienza - Premi Nobel",
+    question:
+      "Marie Curie was the first person to win Nobel Prizes in two different scientific fields. Which two?",
+    options: [
+      "Physics and Chemistry",
+      "Physics and Medicine",
+      "Chemistry and Medicine",
+      "Medicine and Peace",
+      "Physics and Peace",
+    ],
+    correct: 0,
+    explanation:
+      "Marie Curie won the Nobel Prize in Physics (1903, shared, for radioactivity) and the Nobel Prize in Chemistry (1911, for the discovery of radium and polonium) — the first person ever to win Nobel Prizes in two different sciences.",
+    studyTip:
+      "Marie Curie remains the only person to win Nobel Prizes in two different SCIENCES. Linus Pauling also won two Nobels (Chemistry and Peace), but not in two sciences — a useful distinction if a question tries to trick you here.",
+  },
+  {
+    id: "oq-g14",
+    subject: "general",
+    topic: "Filosofia - Filosofi greci",
+    question:
+      "Which ancient Greek philosopher taught Alexander the Great and wrote foundational works on logic, biology, and ethics?",
+    options: ["Socrates", "Plato", "Aristotle", "Pythagoras", "Epicurus"],
+    correct: 2,
+    explanation:
+      "Aristotle tutored the young Alexander the Great and wrote extensively across logic (the syllogism), biology (classification of animals), ethics (Nicomachean Ethics), and politics.",
+    studyTip:
+      "Chain the three generations to keep them straight: Socrates taught Plato, Plato taught Aristotle, and Aristotle taught Alexander the Great.",
+  },
+  {
+    id: "oq-g15",
+    subject: "general",
+    topic: "Istituzioni internazionali",
+    question:
+      "Which international organization, founded in 1945, has its headquarters in New York and is primarily responsible for maintaining international peace and security?",
+    options: [
+      "NATO",
+      "The European Union",
+      "The United Nations",
+      "The World Health Organization",
+      "The World Trade Organization",
+    ],
+    correct: 2,
+    explanation:
+      "The United Nations was founded in 1945 after WWII, headquartered in New York City, with maintaining international peace and security as its core mission, carried out partly through the UN Security Council.",
+    studyTip:
+      "Distinguish UN (global, peace/security, New York) from EU (regional, European integration, Brussels) and NATO (military alliance, Brussels) — a common trap is mixing up headquarters or scope (global vs. regional vs. military-only).",
+  },
+  {
+    id: "oq-g16",
+    subject: "general",
+    topic: "Comprensione del testo - Scienze mediche",
+    question:
+      "Read this excerpt: 'Vaccines work by training the immune system to recognize and combat pathogens, either viruses or bacteria. This is done by introducing a specific antigen into the body, which triggers an immune response.' Which statement best reflects the passage?",
+    options: [
+      "Vaccines directly kill pathogens in the body.",
+      "Vaccines teach the immune system to recognize specific antigens so it can respond to future infections.",
+      "Vaccines are only effective against viruses, not bacteria.",
+      "The immune system cannot respond without a vaccine.",
+      "All vaccines contain live pathogens.",
+    ],
+    correct: 1,
+    explanation:
+      "The passage explicitly states vaccines work by 'training the immune system to recognize and combat pathogens' via introducing an antigen — this matches option B precisely. Option C is wrong because the passage names pathogens as both viruses AND bacteria; A, D, and E introduce claims the text never makes.",
+    studyTip:
+      "For 'which statement best reflects the passage' questions, the correct answer paraphrases exactly what the text says. Watch for options that add unsupported absolutes ('only', 'all', 'directly') not present in the original text — a common wrong-answer pattern on the IMAT reading sections.",
+  },
+
+  /* ---------------- BIOLOGY (10) ---------------- */
+  {
+    id: "oq-b19",
+    subject: "biology",
+    topic: "Biochimica - Proteine - Struttura terziaria",
+    question:
+      "Which level of protein structure refers to the overall three-dimensional shape of a single polypeptide chain, stabilized by interactions such as hydrogen bonds, ionic bonds, and hydrophobic interactions between R groups?",
+    options: [
+      "Primary structure",
+      "Secondary structure",
+      "Tertiary structure",
+      "Quaternary structure",
+      "Peptide structure",
+    ],
+    correct: 2,
+    explanation:
+      "Tertiary structure is the overall 3D folding of a single polypeptide chain, driven by interactions between R-group side chains (hydrogen bonds, ionic bonds, hydrophobic interactions, disulfide bridges). Secondary structure refers only to local backbone folding (helices/sheets); quaternary structure involves multiple polypeptide subunits.",
+    studyTip:
+      "Remember the hierarchy: primary = amino acid sequence, secondary = local backbone folding (helices/sheets), tertiary = full 3D shape of ONE chain, quaternary = assembly of MULTIPLE chains (e.g. hemoglobin's four subunits).",
+  },
+  {
+    id: "oq-b20",
+    subject: "biology",
+    topic: "Biochimica - Proteine - Enzimi",
+    question:
+      "An enzyme's active site is highly specific to its substrate. Which model best describes how the enzyme's shape slightly changes to mold around the substrate upon binding?",
+    options: [
+      "Lock-and-key model",
+      "Induced fit model",
+      "Allosteric model",
+      "Competitive inhibition model",
+      "Feedback inhibition model",
+    ],
+    correct: 1,
+    explanation:
+      "The induced fit model describes how the enzyme's active site changes shape slightly as it binds the substrate, improving the fit — unlike the older lock-and-key model, which assumes a rigid, pre-formed perfect fit.",
+    studyTip:
+      "Lock-and-key = rigid, no shape change. Induced fit = flexible, active site adjusts to the substrate. If a question mentions the enzyme's shape 'changing' or 'molding' around the substrate, it's describing induced fit.",
+  },
+  {
+    id: "oq-b21",
+    subject: "biology",
+    topic: "Anatomia - Sistema scheletrico",
+    question:
+      "Which bone is the longest and strongest bone in the human body, located in the thigh?",
+    options: ["Tibia", "Fibula", "Femur", "Humerus", "Radius"],
+    correct: 2,
+    explanation:
+      "The femur (thighbone) is the longest and strongest bone in the human body, connecting the hip to the knee. The tibia and fibula are lower-leg bones; the humerus and radius are arm bones.",
+    studyTip:
+      "If anatomy appears on the IMAT it will likely be at this basic landmark level (name the bone/organ and its location) — know the major bones (femur, humerus, tibia, fibula, radius, ulna) and where each sits in the body.",
+  },
+  {
+    id: "oq-b22",
+    subject: "biology",
+    topic: "Genetica - Replicazione del DNA",
+    question:
+      "During DNA replication, which enzyme is primarily responsible for unwinding the double helix by breaking the hydrogen bonds between base pairs?",
+    options: ["DNA polymerase", "Helicase", "Ligase", "Primase", "Topoisomerase"],
+    correct: 1,
+    explanation:
+      "Helicase unwinds the DNA double helix by breaking hydrogen bonds between complementary bases, creating the replication fork. DNA polymerase then synthesizes new strands; ligase joins Okazaki fragments; primase lays down RNA primers; topoisomerase relieves supercoiling ahead of the fork.",
+    studyTip:
+      "Learn the replication enzyme 'assembly line' in order: topoisomerase (relieves supercoiling) → helicase (unwinds) → primase (RNA primer) → DNA polymerase (extends new strand) → ligase (seals gaps).",
+  },
+  {
+    id: "oq-b23",
+    subject: "biology",
+    topic: "Sistema muscolare - Contrazione",
+    question:
+      "In skeletal muscle contraction, calcium ions bind to which regulatory protein, causing a shape change that shifts tropomyosin and exposes the myosin-binding sites on actin?",
+    options: [
+      "Troponin",
+      "Titin",
+      "Myoglobin",
+      "Actin itself",
+      "Myosin light chain",
+    ],
+    correct: 0,
+    explanation:
+      "Calcium binds to troponin, which changes shape and pulls tropomyosin away from the myosin-binding sites on actin filaments, allowing myosin heads to attach and begin the cross-bridge cycle.",
+    studyTip:
+      "Remember the chain: Ca²⁺ binds TROPONIN → troponin shifts TROPOMYOSIN → actin's myosin-binding sites are exposed → myosin heads attach (cross-bridge cycling). Troponin is the calcium sensor; tropomyosin is the physical blocker it moves.",
+  },
+  {
+    id: "oq-b24",
+    subject: "biology",
+    topic: "Omeostasi - Termoregolazione",
+    question:
+      "When body temperature rises above the normal set point, which physiological response helps cool the body through evaporative heat loss?",
+    options: [
+      "Vasoconstriction of skin blood vessels",
+      "Shivering",
+      "Sweating",
+      "Piloerection (goosebumps)",
+      "Increased metabolic rate",
+    ],
+    correct: 2,
+    explanation:
+      "Sweating releases water onto the skin surface; as it evaporates, it removes heat from the body, cooling it down. Vasoconstriction, shivering, piloerection, and increased metabolism are all responses to COLD, aimed at conserving or generating heat.",
+    studyTip:
+      "Sort thermoregulation responses into two clear groups: HEAT LOSS (sweating, vasodilation) vs. HEAT CONSERVATION/GENERATION (shivering, vasoconstriction, piloerection). The response's direction tells you immediately whether it's a hot-response or cold-response.",
+  },
+  {
+    id: "oq-b25",
+    subject: "biology",
+    topic: "Sistema riproduttivo - Ciclo mestruale",
+    question:
+      "In the human menstrual cycle, a sudden surge of which hormone directly triggers ovulation (the release of the egg from the ovary)?",
+    options: [
+      "Estrogen",
+      "Progesterone",
+      "Follicle-stimulating hormone (FSH)",
+      "Luteinizing hormone (LH)",
+      "Testosterone",
+    ],
+    correct: 3,
+    explanation:
+      "A sharp surge in luteinizing hormone (LH), triggered by high estrogen levels from the maturing follicle, causes the follicle to rupture and release the egg — this LH surge is the direct trigger for ovulation.",
+    studyTip:
+      "Remember 'LH surge = ovulation trigger.' FSH stimulates follicle growth earlier in the cycle; estrogen rises as the follicle matures and eventually triggers the LH surge; progesterone rises AFTER ovulation to maintain the uterine lining.",
+  },
+  {
+    id: "oq-b26",
+    subject: "biology",
+    topic: "Microbiologia - Virus",
+    question:
+      "Which of the following best describes why viruses are NOT classified as living organisms by most biologists?",
+    options: [
+      "They cannot mutate",
+      "They cannot reproduce independently without a host cell's machinery",
+      "They lack genetic material",
+      "They are too small to be seen",
+      "They do not contain proteins",
+    ],
+    correct: 1,
+    explanation:
+      "Viruses lack the cellular machinery (ribosomes, organelles, metabolism) to replicate on their own; they must hijack a host cell's machinery to reproduce. Viruses DO have genetic material (DNA or RNA) and proteins (capsid), and they can mutate.",
+    studyTip:
+      "The core argument against viruses being 'alive' is their total dependency on a host cell for reproduction — they fail the 'independent reproduction' test, even though they have genetic material, can evolve, and have protein structures.",
+  },
+  {
+    id: "oq-b27",
+    subject: "biology",
+    topic: "Fisiologia renale - Nefrone",
+    question:
+      "In the nephron, at which structure does the majority of glucose and useful ions get reabsorbed back into the bloodstream after filtration?",
+    options: [
+      "Glomerulus",
+      "Bowman's capsule",
+      "Proximal convoluted tubule",
+      "Loop of Henle",
+      "Collecting duct",
+    ],
+    correct: 2,
+    explanation:
+      "The proximal convoluted tubule is responsible for reabsorbing the majority of filtered glucose, amino acids, and ions back into the blood, right after initial filtration occurs at the glomerulus/Bowman's capsule.",
+    studyTip:
+      "Follow the nephron in order: glomerulus/Bowman's capsule = FILTRATION (size-based); proximal tubule = BULK REABSORPTION (glucose, ions, most water); loop of Henle = concentration gradient; collecting duct = FINAL fine-tuning (regulated by ADH).",
+  },
+  {
+    id: "oq-b28",
+    subject: "biology",
+    topic: "Ecologia - Simbiosi",
+    question:
+      "Remora fish attach themselves to sharks using a sucker-like fin, feeding on scraps of the shark's food and hitching a ride, while the shark experiences no significant benefit or harm. What type of symbiotic relationship is this?",
+    options: ["Mutualism", "Commensalism", "Parasitism", "Amensalism", "Predation"],
+    correct: 1,
+    explanation:
+      "This is commensalism — the remora clearly benefits (free food and transport) while the shark is essentially unaffected (no significant benefit or harm). This is the classic textbook example of commensalism.",
+    studyTip:
+      "The cleanest test for commensalism is 'one side benefits, the other is genuinely neutral' — remora-shark and barnacles-on-whale are unambiguous textbook examples; be cautious with clownfish-anemone, which many textbooks now classify as mutualism instead.",
+  },
+
+  /* ---------------- CHEMISTRY (8) ---------------- */
+  {
+    id: "oq-c19",
+    subject: "chemistry",
+    topic: "Gas ideali - Legge di Gay-Lussac",
+    question:
+      "A sample of gas in a rigid, sealed container is heated from 27°C to 127°C. If the initial pressure was 2 atm, what is the final pressure? (Assume constant volume.)",
+    options: ["2.67 atm", "4 atm", "8.44 atm", "1.5 atm", "3.33 atm"],
+    correct: 0,
+    explanation:
+      "Gay-Lussac's Law states P1/T1 = P2/T2 at constant volume, with temperatures in Kelvin. T1 = 27+273 = 300 K, T2 = 127+273 = 400 K. P2 = P1 × (T2/T1) = 2 × (400/300) = 2.67 atm.",
+    studyTip:
+      "ALWAYS convert Celsius to Kelvin before using gas laws (K = °C + 273). A very common IMAT trap is plugging Celsius values directly into P/T or V/T ratios, which gives a wrong answer.",
+  },
+  {
+    id: "oq-c20",
+    subject: "chemistry",
+    topic: "Isomeria - Isomeria strutturale",
+    question:
+      "Butane (C4H10) and isobutane (2-methylpropane) have the same molecular formula but different arrangements of atoms. What type of isomerism is this?",
+    options: [
+      "Geometric (cis-trans) isomerism",
+      "Structural (constitutional) isomerism",
+      "Optical isomerism",
+      "Conformational isomerism",
+      "Enantiomerism",
+    ],
+    correct: 1,
+    explanation:
+      "Butane and isobutane are structural (constitutional) isomers — same molecular formula (C4H10) but different connectivity of atoms (straight chain vs. branched). Geometric and optical isomerism involve the same connectivity but a different spatial arrangement.",
+    studyTip:
+      "Structural isomers = atoms connected DIFFERENTLY (different skeleton). Stereoisomers (geometric/optical) = atoms connected the SAME way but arranged differently in 3D. Ask 'is the connectivity itself different?' first.",
+  },
+  {
+    id: "oq-c21",
+    subject: "chemistry",
+    topic: "Tavola periodica - Raggio atomico",
+    question:
+      "Moving from left to right across a period on the periodic table, atomic radius generally:",
+    options: [
+      "Increases, because more electron shells are added",
+      "Decreases, because increasing nuclear charge pulls electrons closer",
+      "Stays constant",
+      "Increases, because more electrons repel each other",
+      "Decreases, because fewer protons are present",
+    ],
+    correct: 1,
+    explanation:
+      "Across a period, protons are added to the nucleus while electrons are added to the SAME outer shell — the stronger positive pull draws the electron cloud inward, shrinking atomic radius.",
+    studyTip:
+      "Periodic trends to memorize as directions: atomic radius DECREASES left→right, INCREASES top→bottom; ionization energy and electronegativity do the OPPOSITE of atomic radius.",
+  },
+  {
+    id: "oq-c22",
+    subject: "chemistry",
+    topic: "Configurazione elettronica - Scrittura",
+    question:
+      "What is the electron configuration of a neutral chlorine atom (atomic number 17)?",
+    options: [
+      "1s² 2s² 2p⁶ 3s² 3p⁵",
+      "1s² 2s² 2p⁶ 3s² 3p⁶",
+      "1s² 2s² 2p⁵ 3s² 3p⁶",
+      "1s² 2s² 2p⁶ 3s² 3p⁴",
+      "1s² 2s² 2p⁶ 3s¹ 3p⁶",
+    ],
+    correct: 0,
+    explanation:
+      "Chlorine has 17 electrons. Filling orbitals in order: 1s²(2) 2s²(2) 2p⁶(6) 3s²(2) 3p⁵(5) = 2+2+6+2+5 = 17 electrons total, matching option A.",
+    studyTip:
+      "Add up the superscripts to double-check your total equals the atomic number. Chlorine (halogen, group 17) always ends in ...3p⁵ — one electron short of the stable noble-gas configuration, which is why halogens are so reactive.",
+  },
+  {
+    id: "oq-c23",
+    subject: "chemistry",
+    topic: "Mole e ioni in soluzione",
+    question:
+      "How many moles of chloride ions (Cl⁻) are present in 2 liters of a 0.5 M calcium chloride (CaCl₂) solution?",
+    options: ["0.5 mol", "1 mol", "2 mol", "4 mol", "0.25 mol"],
+    correct: 2,
+    explanation:
+      "Moles of CaCl₂ = Molarity × Volume = 0.5 mol/L × 2 L = 1 mol CaCl₂. Each formula unit dissociates into 1 Ca²⁺ and 2 Cl⁻, so moles of Cl⁻ = 1 mol × 2 = 2 mol.",
+    studyTip:
+      "When a question asks for a specific ION'S moles (not the compound's), multiply by the number of that ion per formula unit — CaCl₂ gives 2 Cl⁻ per unit, Na₂SO₄ gives 2 Na⁺ per unit, and so on.",
+  },
+  {
+    id: "oq-c24",
+    subject: "chemistry",
+    topic: "Legami chimici - Covalente polare",
+    question:
+      "Which type of chemical bond involves the sharing of electrons between two nonmetal atoms with a significant difference in electronegativity, resulting in partial positive and partial negative charges?",
+    options: [
+      "Nonpolar covalent bond",
+      "Polar covalent bond",
+      "Ionic bond",
+      "Metallic bond",
+      "Hydrogen bond",
+    ],
+    correct: 1,
+    explanation:
+      "A polar covalent bond involves shared electrons unevenly distributed due to an electronegativity difference, creating partial charges (δ+ and δ−) — as in the O-H bonds of water. Nonpolar covalent bonds involve equal sharing; ionic bonds involve electron transfer, not sharing.",
+    studyTip:
+      "Use electronegativity difference (ΔEN) as your decision rule: ΔEN ≈ 0 → nonpolar covalent; moderate ΔEN → polar covalent; large ΔEN → ionic. Hydrogen bonds are a separate, weaker intermolecular force.",
+  },
+  {
+    id: "oq-c25",
+    subject: "chemistry",
+    topic: "Chimica organica - Gruppi funzionali",
+    question:
+      "Which functional group is characteristic of alcohols and is responsible for their ability to form hydrogen bonds?",
+    options: [
+      "Carboxyl group (-COOH)",
+      "Hydroxyl group (-OH)",
+      "Amino group (-NH₂)",
+      "Carbonyl group (C=O)",
+      "Ester group (-COO-)",
+    ],
+    correct: 1,
+    explanation:
+      "The hydroxyl group (-OH) defines alcohols and, because oxygen is highly electronegative and bonded to hydrogen, allows alcohols to form hydrogen bonds — giving them relatively high boiling points and water solubility for their size.",
+    studyTip:
+      "Recognize functional groups by their defining atoms: -OH = alcohol, -COOH = carboxylic acid, -NH₂ = amine, C=O = carbonyl, -COO- = ester. IMAT chemistry increasingly tests organic nomenclature at this basic level.",
+  },
+  {
+    id: "oq-c26",
+    subject: "chemistry",
+    topic: "Equilibrio chimico - Principio di Le Chatelier",
+    question:
+      "For the exothermic reaction N₂(g) + 3H₂(g) ⇌ 2NH₃(g) + heat, at equilibrium, what happens if the temperature of the system is increased?",
+    options: [
+      "The equilibrium shifts right, producing more NH₃",
+      "The equilibrium shifts left, producing more N₂ and H₂",
+      "The equilibrium is unaffected by temperature",
+      "The reaction stops entirely",
+      "The value of Kc becomes infinite",
+    ],
+    correct: 1,
+    explanation:
+      "Since the forward reaction is exothermic, increasing temperature adds 'heat' to the product side, so by Le Chatelier's principle the equilibrium shifts LEFT to absorb the added heat, producing more N₂ and H₂.",
+    studyTip:
+      "Treat heat as a product in an exothermic reaction (or a reactant in an endothermic one) when applying Le Chatelier's principle — adding heat pushes equilibrium AWAY from the side where heat appears.",
+  },
+
+  /* ---------------- PHYSICS (6) ---------------- */
+  {
+    id: "oq-p16",
+    subject: "physics",
+    topic: "Dinamica - Seconda legge di Newton",
+    question: "A 10 kg object experiences a net force of 25 N. What is its acceleration?",
+    options: ["0.4 m/s²", "2.5 m/s²", "25 m/s²", "250 m/s²", "10 m/s²"],
+    correct: 1,
+    explanation:
+      "Newton's Second Law states F = ma, so a = F/m = 25 N / 10 kg = 2.5 m/s².",
+    studyTip:
+      "F = ma is one of the most frequently tested physics formulas on the IMAT — double-check you're dividing (not multiplying) when solving for acceleration or mass.",
+  },
+  {
+    id: "oq-p17",
+    subject: "physics",
+    topic: "Lavoro ed energia - Lavoro di una forza",
+    question:
+      "A constant force of 20 N is applied to push a box 5 meters across a floor, in the direction of the force. How much work is done on the box?",
+    options: ["4 J", "25 J", "100 J", "0.25 J", "15 J"],
+    correct: 2,
+    explanation:
+      "Work = Force × distance (when force and displacement are in the same direction) = 20 N × 5 m = 100 J.",
+    studyTip:
+      "Work is only done by the COMPONENT of force in the direction of motion — use W = F·d·cos(θ) when force and displacement are at an angle; when parallel (θ=0°), it simplifies to W = F×d.",
+  },
+  {
+    id: "oq-p18",
+    subject: "physics",
+    topic: "Elettromagnetismo - Regola della mano destra",
+    question:
+      "A straight current-carrying wire generates a magnetic field around it. According to the right-hand rule, if you point your right thumb in the direction of the current, what does the direction of your curled fingers represent?",
+    options: [
+      "The magnetic field circulating in circles around the wire",
+      "The direction of the electric field radiating outward",
+      "The direction electrons are physically moving",
+      "The magnetic field pointing parallel to the wire",
+      "There is no magnetic field around a straight wire",
+    ],
+    correct: 0,
+    explanation:
+      "By the right-hand rule, if you point your right thumb in the direction of conventional current flow, your curled fingers show the magnetic field circulating in circles around the wire, not radiating outward or running parallel to it.",
+    studyTip:
+      "Right-hand rule for straight wires: thumb = current direction, curled fingers = magnetic field direction (circles around the wire). This is different from the right-hand rule used for a coil/solenoid, so identify the wire's geometry first.",
+  },
+  {
+    id: "oq-p19",
+    subject: "physics",
+    topic: "Termodinamica - Primo principio",
+    question:
+      "According to the First Law of Thermodynamics, if a gas absorbs 500 J of heat and does 200 J of work on its surroundings, what is the change in the gas's internal energy?",
+    options: ["700 J", "300 J", "-300 J", "-700 J", "100 J"],
+    correct: 1,
+    explanation:
+      "The First Law of Thermodynamics states ΔU = Q − W, where Q is heat added to the system and W is work done BY the system. ΔU = 500 J − 200 J = 300 J (internal energy increases).",
+    studyTip:
+      "Watch the sign convention: heat ADDED to the system is positive Q; work done BY the system is positive W and is subtracted. ΔU = Q − W is the standard convention used across most physics courses and the IMAT.",
+  },
+  {
+    id: "oq-p20",
+    subject: "physics",
+    topic: "Onde - Equazione della velocità d'onda",
+    question:
+      "A sound wave has a frequency of 200 Hz and a wavelength of 1.7 m. What is the approximate speed of the wave?",
+    options: ["117.6 m/s", "200 m/s", "340 m/s", "1.7 m/s", "400 m/s"],
+    correct: 2,
+    explanation:
+      "Wave speed = frequency × wavelength: v = f × λ = 200 Hz × 1.7 m = 340 m/s, which matches the known speed of sound in air.",
+    studyTip:
+      "The wave equation v = fλ links speed, frequency, and wavelength for ANY wave (sound, light, water) — memorize it so you can instantly rearrange it to solve for whichever variable is missing.",
+  },
+  {
+    id: "oq-p21",
+    subject: "physics",
+    topic: "Idrostatica - Principio di Archimede",
+    question:
+      "According to Archimedes' principle, the buoyant force on a fully submerged object is equal to:",
+    options: [
+      "The weight of the object itself",
+      "The weight of the fluid displaced by the object",
+      "The volume of the object",
+      "The density of the fluid alone",
+      "The pressure at the bottom of the object",
+    ],
+    correct: 1,
+    explanation:
+      "Archimedes' principle states the buoyant force equals the weight of the fluid displaced by the submerged object (F = ρ_fluid × V_displaced × g) — not the object's own weight, volume alone, or fluid density alone.",
+    studyTip:
+      "Buoyant force needs THREE things multiplied together: fluid density × displaced volume × gravity. An object floats when this force equals its own weight; it sinks when it's denser than the fluid.",
+  },
+
+  /* ---------------- LOGIC (4, English reading-comprehension style) ---------------- */
+  {
+    id: "oq-l16",
+    subject: "logic",
+    topic: "Ragionamento critico - Assunzioni",
+    question:
+      "Read this passage: 'Sales of electric cars have tripled in the last five years. Clearly, consumers are becoming more environmentally conscious.' Which of the following is an assumption underlying this argument?",
+    options: [
+      "Electric cars are more expensive than petrol cars.",
+      "The increase in electric car sales is primarily driven by environmental concern rather than other factors like cost savings or government incentives.",
+      "All consumers who buy electric cars care about the environment.",
+      "Electric car technology has improved significantly.",
+      "Petrol car sales have decreased over the same period.",
+    ],
+    correct: 1,
+    explanation:
+      "The argument concludes environmental consciousness FROM rising sales, which only works if we assume environmental concern — not cost savings, incentives, or convenience — is the main driver of that increase.",
+    studyTip:
+      "To find an 'underlying assumption,' ask: 'what MUST be true for this evidence to actually support this conclusion?' Here, sales tripling supports 'more environmental consciousness' only if environmental concern explains the rise.",
+  },
+  {
+    id: "oq-l17",
+    subject: "logic",
+    topic: "Ragionamento critico - Indebolire",
+    question:
+      "Argument: 'A new study found that people who drink coffee daily have a lower risk of developing type 2 diabetes. Therefore, drinking coffee daily prevents diabetes.' Which of the following, if true, would most WEAKEN this argument?",
+    options: [
+      "Coffee contains antioxidants.",
+      "People who drink coffee daily also tend to exercise more and eat healthier diets on average, which independently lowers diabetes risk.",
+      "Some people dislike the taste of coffee.",
+      "Coffee consumption has increased worldwide in recent years.",
+      "Type 2 diabetes is more common in older adults.",
+    ],
+    correct: 1,
+    explanation:
+      "Option B introduces a confounding variable (exercise and diet) that could explain the lower diabetes risk INSTEAD of coffee, directly attacking the assumption that coffee itself is the cause.",
+    studyTip:
+      "Arguments that jump from correlation to causation are vulnerable to confounding-variable attacks. The strongest weakener introduces a third factor that could explain the same result without the claimed cause being responsible.",
+  },
+  {
+    id: "oq-l18",
+    subject: "logic",
+    topic: "Ragionamento critico - Punti deboli",
+    question:
+      "Argument: 'Every swan that scientists have observed in Europe is white. Therefore, all swans in the world must be white.' What is the main flaw in this argument?",
+    options: [
+      "It relies on a sample that may not represent the whole population (swans outside Europe were never observed).",
+      "It assumes swans cannot change color.",
+      "It uses a circular definition of 'swan.'",
+      "It fails to define what 'white' means precisely.",
+      "It contradicts itself internally.",
+    ],
+    correct: 0,
+    explanation:
+      "The argument generalizes from a limited sample (swans observed only in Europe) to a universal claim about ALL swans everywhere — a classic hasty generalization. Black swans were later found in Australia, disproving the conclusion.",
+    studyTip:
+      "Watch for arguments that jump from 'every case I've seen' to 'every case, everywhere' — this hasty generalization flaw is one of the most frequently tested reasoning flaws on the IMAT logic section.",
+  },
+  {
+    id: "oq-l19",
+    subject: "logic",
+    topic: "Ragionamento critico - Deduzione (contronominale)",
+    question:
+      "Given the statement: 'If a species is a mammal, then it is warm-blooded.' Which of the following can be validly deduced?",
+    options: [
+      "If a species is warm-blooded, then it is a mammal.",
+      "If a species is not warm-blooded, then it is not a mammal.",
+      "If a species is not a mammal, then it is not warm-blooded.",
+      "All warm-blooded species are mammals.",
+      "Mammals are the only warm-blooded species.",
+    ],
+    correct: 1,
+    explanation:
+      "The only logically valid deduction from 'If P, then Q' is its CONTRAPOSITIVE: 'If NOT Q, then NOT P' — here, 'if not warm-blooded, then not a mammal.' Options A, D, and E commit the fallacy of affirming the consequent; option C states the (also invalid) inverse.",
+    studyTip:
+      "For any 'If P then Q' statement, only the CONTRAPOSITIVE ('if not Q, then not P') is guaranteed true. The CONVERSE and INVERSE are logical traps — birds are warm-blooded despite not being mammals, disproving the converse here.",
+  },
+
+  /* ---------------- MATH (2) ---------------- */
+  {
+    id: "oq-m19",
+    subject: "math",
+    topic: "Statistica - Media aritmetica",
+    question:
+      "A data set consists of the values: 4, 8, 6, 10, 12. What is the mean (average) of this data set?",
+    options: ["6", "8", "9", "10", "40"],
+    correct: 1,
+    explanation:
+      "Mean = sum of values ÷ number of values = (4+8+6+10+12) / 5 = 40/5 = 8.",
+    studyTip:
+      "Don't confuse mean (sum ÷ count), median (middle value when sorted), and mode (most frequent value) — IMAT questions often test whether you know which measure is actually being asked for.",
+  },
+  {
+    id: "oq-m20",
+    subject: "math",
+    topic: "Probabilità - Eventi indipendenti",
+    question:
+      "A fair six-sided die is rolled twice. What is the probability of rolling a 6 both times?",
+    options: ["1/6", "1/12", "1/36", "2/6", "1/3"],
+    correct: 2,
+    explanation:
+      "Each roll is independent, so the probability of two independent events both occurring is the PRODUCT of their individual probabilities: P(6 and 6) = (1/6) × (1/6) = 1/36.",
+    studyTip:
+      "For independent events (dice, coins, drawing WITH replacement), multiply the individual probabilities. This differs from dependent events (drawing WITHOUT replacement), where the second probability changes based on the first outcome.",
+  },
 ];
