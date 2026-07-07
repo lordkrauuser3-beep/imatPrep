@@ -19,6 +19,11 @@ import {
   AlertTriangle,
   Dna,
   Globe2,
+  TrendingUp,
+  TrendingDown,
+  History,
+  Download,
+  Upload,
 } from "lucide-react";
 import { SIMULATION_POOL } from "./simulationQuestions";
 import { PAST_PAPER_2025 } from "./pastPaper2025";
@@ -41,9 +46,13 @@ const STORAGE_KEY = "imat-prep:results";
 async function loadResults() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : { attempts: [] };
+    const parsed = raw ? JSON.parse(raw) : {};
+    return {
+      attempts: parsed.attempts || [],
+      simulations: parsed.simulations || [],
+    };
   } catch (e) {
-    return { attempts: [] };
+    return { attempts: [], simulations: [] };
   }
 }
 
@@ -67,6 +76,62 @@ const SUBJECTS = {
   logic: { label: "Logica", icon: BrainCircuit, color: "#C8632E" },
   general: { label: "Cultura Generale", icon: Globe2, color: "#9C7B4F" },
 };
+
+/* ============================================================
+   EXTERNAL STUDY RESOURCES
+   Fallback link per subject (verified guides), with an optional
+   per-topic override map for when a more specific link is known.
+   Add entries to TOPIC_RESOURCES as you find good material —
+   anything not listed there falls back to the subject guide.
+   ============================================================ */
+
+const SUBJECT_RESOURCES = {
+  biology: { label: "Guida Biologia (EnterMedSchool)", url: "https://www.entermedschool.com/imat-biology" },
+  chemistry: { label: "Guida Chimica (EnterMedSchool)", url: "https://www.entermedschool.com/imat-chemistry" },
+  physics: { label: "Sillabo Fisica (EnterMedSchool)", url: "https://www.entermedschool.com/imat-2026-syllabus" },
+  math: { label: "Sillabo Matematica (EnterMedSchool)", url: "https://www.entermedschool.com/imat-2026-syllabus" },
+  logic: { label: "Guida Logica (EnterMedSchool)", url: "https://www.entermedschool.com/imat-logic" },
+  general: { label: "Guida Cultura Generale (EnterMedSchool)", url: "https://www.entermedschool.com/imat-general-knowledge" },
+};
+
+// Optional per-topic overrides. Key = exact `topic` string used in the
+// question data. Populate this over time with your own links (video,
+// PDF, article) for the topics you want a more specific richiamo teorico.
+const TOPIC_RESOURCES = {};
+
+function getResourceFor(question) {
+  if (!question) return null;
+  return TOPIC_RESOURCES[question.topic] || SUBJECT_RESOURCES[question.subject] || null;
+}
+
+function ResourceLink({ question }) {
+  const resource = getResourceFor(question);
+  if (!resource) return null;
+  return (
+    <a
+      href={resource.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "6px",
+        marginTop: "4px",
+        padding: "9px 12px",
+        borderRadius: "8px",
+        border: "1.5px solid #E8E4DC",
+        backgroundColor: "#FFFFFF",
+        color: "#6B6F73",
+        fontSize: "12px",
+        fontWeight: 600,
+        textDecoration: "none",
+      }}
+    >
+      <BookOpen size={13} strokeWidth={2} />
+      Approfondisci: {resource.label}
+    </a>
+  );
+}
 
 const QUESTION_BANK = [
   {
@@ -287,6 +352,44 @@ function buildSimulationSet() {
   return shuffleArray([...set, ...refill]);
 }
 
+// Returns a Monday-anchored ISO date string (YYYY-MM-DD) identifying the
+// calendar week a timestamp falls into. Used to bucket attempts by week.
+function getWeekKey(timestamp) {
+  const d = new Date(timestamp);
+  const day = (d.getDay() + 6) % 7; // Monday = 0 ... Sunday = 6
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() - day);
+  return d.toISOString().slice(0, 10);
+}
+
+function formatWeekLabel(weekKey) {
+  const d = new Date(weekKey + "T00:00:00");
+  return d.toLocaleDateString("it-IT", { day: "2-digit", month: "2-digit" });
+}
+
+// Groups attempts by topic and returns accuracy stats, sorted from
+// weakest to strongest. Topics with fewer than `minAttempts` answers
+// are excluded (too little data to call them a real weak spot).
+function computeWeakTopics(attempts, minAttempts = 3) {
+  const topicMap = {};
+  attempts.forEach((a) => {
+    const key = a.topic || SUBJECTS[a.subject]?.label || a.subject || "Altro";
+    if (!topicMap[key]) topicMap[key] = { correct: 0, total: 0, subject: a.subject };
+    topicMap[key].total += 1;
+    if (a.correct) topicMap[key].correct += 1;
+  });
+  return Object.entries(topicMap)
+    .map(([topic, stats]) => ({
+      topic,
+      subject: stats.subject,
+      total: stats.total,
+      correct: stats.correct,
+      accuracy: Math.round((stats.correct / stats.total) * 100),
+    }))
+    .filter((t) => t.total >= minAttempts)
+    .sort((a, b) => a.accuracy - b.accuracy);
+}
+
 function formatTime(totalSeconds) {
   const m = Math.floor(totalSeconds / 60);
   const s = totalSeconds % 60;
@@ -326,7 +429,13 @@ function SubjectBadge({ subject }) {
    QUIZ SECTION
    ============================================================ */
 
-function QuizSection({ onAttemptComplete }) {
+function QuizSection({
+  onAttemptComplete,
+  pool = FULL_POOL,
+  mode = "quiz",
+  title = "Quiz per argomento",
+  subtitle = "Una domanda alla volta, con spiegazione e consiglio di studio dopo ogni risposta.",
+}) {
   const [filterSubject, setFilterSubject] = useState("all");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selected, setSelected] = useState(null);
@@ -335,7 +444,7 @@ function QuizSection({ onAttemptComplete }) {
 
   // Shuffle once per mount so "Tutte le materie" doesn't always start
   // with the same fixed order, but stays stable while answering.
-  const [shuffledPool] = useState(() => shuffleArray(FULL_POOL));
+  const [shuffledPool] = useState(() => shuffleArray(pool));
 
   const filteredQuestions =
     filterSubject === "all"
@@ -370,7 +479,7 @@ function QuizSection({ onAttemptComplete }) {
       topic: question.topic,
       correct: isCorrect,
       timestamp: Date.now(),
-      mode: "quiz",
+      mode,
     });
   };
 
@@ -388,6 +497,28 @@ function QuizSection({ onAttemptComplete }) {
     );
   };
 
+  if (shuffledPool.length === 0) {
+    return (
+      <div style={{ maxWidth: "560px" }}>
+        <h1
+          style={{
+            fontFamily: "'Source Serif 4', Georgia, serif",
+            fontSize: "28px",
+            fontWeight: 600,
+            color: "#1A1D1F",
+            margin: "0 0 10px 0",
+          }}
+        >
+          {title}
+        </h1>
+        <p style={{ color: "#6B6F73", fontSize: "15px", lineHeight: 1.6 }}>
+          Non ci sono ancora domande qui. Rispondi a qualche quiz o completa
+          una simulazione per iniziare a raccogliere dati.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div style={{ maxWidth: "760px" }}>
       <div style={{ marginBottom: "24px" }}>
@@ -400,11 +531,10 @@ function QuizSection({ onAttemptComplete }) {
             margin: "0 0 6px 0",
           }}
         >
-          Quiz per argomento
+          {title}
         </h1>
         <p style={{ color: "#6B6F73", fontSize: "14px", margin: 0 }}>
-          Una domanda alla volta, con spiegazione e consiglio di studio dopo
-          ogni risposta.
+          {subtitle}
         </p>
       </div>
 
@@ -645,6 +775,8 @@ function QuizSection({ onAttemptComplete }) {
                 </p>
               </div>
             </div>
+
+            <ResourceLink question={question} />
           </div>
         )}
       </div>
@@ -744,10 +876,75 @@ function QuizSection({ onAttemptComplete }) {
 }
 
 /* ============================================================
+   RIPASSO MIRATO (targeted review)
+   Filters the question pool down to whichever topics currently
+   have the lowest accuracy, based on the same logic used in the
+   advanced stats. Reuses QuizSection for the actual quiz UI.
+   ============================================================ */
+
+function RipassoSection({ results, onAttemptComplete }) {
+  const attempts = results.attempts || [];
+  const MIN_ATTEMPTS_FOR_PRIORITY = 3;
+  const ACCURACY_THRESHOLD = 70; // topics below this % are considered priority
+
+  const weakTopics = computeWeakTopics(attempts, MIN_ATTEMPTS_FOR_PRIORITY);
+  let targetTopics = weakTopics.filter((t) => t.accuracy < ACCURACY_THRESHOLD);
+  // If nothing crosses the threshold (e.g. you're doing great everywhere),
+  // fall back to the 5 relatively weakest topics so the mode isn't empty.
+  if (targetTopics.length === 0 && weakTopics.length > 0) {
+    targetTopics = weakTopics.slice(0, 5);
+  }
+
+  if (attempts.length < MIN_ATTEMPTS_FOR_PRIORITY || targetTopics.length === 0) {
+    return (
+      <div style={{ maxWidth: "560px" }}>
+        <h1
+          style={{
+            fontFamily: "'Source Serif 4', Georgia, serif",
+            fontSize: "28px",
+            fontWeight: 600,
+            color: "#1A1D1F",
+            margin: "0 0 10px 0",
+          }}
+        >
+          Ripasso mirato
+        </h1>
+        <p style={{ color: "#6B6F73", fontSize: "15px", lineHeight: 1.6 }}>
+          Rispondi ad almeno {MIN_ATTEMPTS_FOR_PRIORITY} domande per lo stesso
+          argomento (nei Quiz o in Simulazione) così posso capire dove hai più
+          margine di miglioramento e costruirti un ripasso su misura.
+        </p>
+      </div>
+    );
+  }
+
+  const targetTopicNames = new Set(targetTopics.map((t) => t.topic));
+  const pool = FULL_POOL.filter((q) => targetTopicNames.has(q.topic));
+
+  const topicList = targetTopics
+    .slice(0, 6)
+    .map((t) => t.topic)
+    .join(", ");
+
+  return (
+    <QuizSection
+      key={targetTopics.map((t) => t.topic).join("|")}
+      onAttemptComplete={onAttemptComplete}
+      pool={pool}
+      mode="ripasso"
+      title="Ripasso mirato"
+      subtitle={`${targetTopics.length} argomenti con più margine di miglioramento: ${topicList}${
+        targetTopics.length > 6 ? "…" : ""
+      }`}
+    />
+  );
+}
+
+/* ============================================================
    SIMULATION SECTION (full mock test: 60 questions, 100 minutes)
    ============================================================ */
 
-function SimulationSection({ onSimulationComplete }) {
+function SimulationSection({ onSimulationComplete, onSimulationRecorded }) {
   // phase: "intro" | "running" | "confirm" | "report"
   const [phase, setPhase] = useState("intro");
   const [questions, setQuestions] = useState([]);
@@ -855,6 +1052,19 @@ function SimulationSection({ onSimulationComplete }) {
 
     setReport(reportData);
     setPhase("report");
+
+    // Persist the full simulation summary for the simulation history view
+    onSimulationRecorded({
+      id: `sim-${Date.now()}`,
+      timestamp: Date.now(),
+      score: reportData.score,
+      correct,
+      wrong,
+      blank,
+      total: questions.length,
+      bySubject,
+      timeUsed: reportData.timeUsed,
+    });
 
     // Push each answered question into global stats too
     questions.forEach((q, idx) => {
@@ -1297,6 +1507,10 @@ function SimulationSection({ onSimulationComplete }) {
                     <Lightbulb size={14} strokeWidth={2} style={{ flexShrink: 0, marginTop: "1px" }} />
                     {question.studyTip}
                   </div>
+
+                  <div style={{ marginTop: "10px" }}>
+                    <ResourceLink question={question} />
+                  </div>
                 </div>
               ))}
             </div>
@@ -1631,6 +1845,321 @@ function SimulationSection({ onSimulationComplete }) {
 }
 
 /* ============================================================
+   ADVANCED STATS
+   Weekly trend, topic weakness report, simulation history.
+   ============================================================ */
+
+function StatLabel({ children }) {
+  return (
+    <div
+      style={{
+        fontSize: "11px",
+        fontWeight: 700,
+        letterSpacing: "0.08em",
+        textTransform: "uppercase",
+        color: "#9A9D9F",
+        marginBottom: "12px",
+        marginTop: "32px",
+        display: "flex",
+        alignItems: "center",
+        gap: "6px",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function StatsSection({ results }) {
+  const attempts = results.attempts || [];
+  const simulations = results.simulations || [];
+
+  /* ---------- Weekly trend: accuracy per week, last 8 active weeks ---------- */
+  const weekMap = {};
+  attempts.forEach((a) => {
+    const key = getWeekKey(a.timestamp);
+    if (!weekMap[key]) weekMap[key] = { correct: 0, total: 0 };
+    weekMap[key].total += 1;
+    if (a.correct) weekMap[key].correct += 1;
+  });
+  const weeks = Object.keys(weekMap).sort().slice(-8);
+  const maxWeekTotal = Math.max(1, ...weeks.map((w) => weekMap[w].total));
+
+  /* ---------- Topic weakness: lowest accuracy topics with enough data ---------- */
+  const MIN_ATTEMPTS_FOR_PRIORITY = 3;
+  const weakTopics = computeWeakTopics(attempts, MIN_ATTEMPTS_FOR_PRIORITY).slice(0, 8);
+
+  /* ---------- Simulation history: most recent first ---------- */
+  const sortedSimulations = [...simulations].sort((a, b) => b.timestamp - a.timestamp);
+
+  const cardStyle = {
+    backgroundColor: "#FFFFFF",
+    border: "1.5px solid #E8E4DC",
+    borderRadius: "12px",
+    padding: "18px",
+  };
+  const emptyStyle = { color: "#9A9D9F", fontSize: "13px", margin: 0 };
+
+  return (
+    <div style={{ maxWidth: "760px" }}>
+      <div style={{ marginBottom: "8px" }}>
+        <h1
+          style={{
+            fontFamily: "'Source Serif 4', Georgia, serif",
+            fontSize: "28px",
+            fontWeight: 600,
+            color: "#1A1D1F",
+            margin: "0 0 6px 0",
+          }}
+        >
+          Statistiche avanzate
+        </h1>
+        <p style={{ color: "#6B6F73", fontSize: "14px", margin: 0 }}>
+          Andamento nel tempo, argomenti da rivedere con priorità e storico delle simulazioni.
+        </p>
+      </div>
+
+      {/* Weekly trend */}
+      <StatLabel>
+        <TrendingUp size={13} strokeWidth={2.5} />
+        Andamento settimanale
+      </StatLabel>
+      <div style={cardStyle}>
+        {weeks.length === 0 ? (
+          <p style={emptyStyle}>
+            Non ci sono ancora abbastanza dati. Rispondi a qualche domanda nei Quiz o in Simulazione.
+          </p>
+        ) : (
+          <svg
+            viewBox={`0 0 ${weeks.length * 64} 150`}
+            width="100%"
+            height="150"
+            style={{ overflow: "visible" }}
+          >
+            {weeks.map((w, i) => {
+              const stats = weekMap[w];
+              const pct = Math.round((stats.correct / stats.total) * 100);
+              const barHeight = Math.max(4, (stats.total / maxWeekTotal) * 90);
+              const x = i * 64 + 12;
+              return (
+                <g key={w}>
+                  <text
+                    x={x + 20}
+                    y={112 - barHeight - 8}
+                    textAnchor="middle"
+                    fontSize="11"
+                    fontWeight="600"
+                    fill="#1A1D1F"
+                    fontFamily="'IBM Plex Mono', monospace"
+                  >
+                    {pct}%
+                  </text>
+                  <rect
+                    x={x}
+                    y={112 - barHeight}
+                    width="40"
+                    height={barHeight}
+                    rx="5"
+                    fill="#2B5F75"
+                    opacity={0.25 + (pct / 100) * 0.55}
+                  />
+                  <text
+                    x={x + 20}
+                    y={130}
+                    textAnchor="middle"
+                    fontSize="10"
+                    fill="#9A9D9F"
+                    fontFamily="'IBM Plex Mono', monospace"
+                  >
+                    {formatWeekLabel(w)}
+                  </text>
+                  <text
+                    x={x + 20}
+                    y={143}
+                    textAnchor="middle"
+                    fontSize="9"
+                    fill="#9A9D9F"
+                  >
+                    {stats.total}q
+                  </text>
+                </g>
+              );
+            })}
+          </svg>
+        )}
+      </div>
+
+      {/* Topic weakness report */}
+      <StatLabel>
+        <AlertTriangle size={13} strokeWidth={2.5} />
+        Argomenti da rivedere con priorità
+      </StatLabel>
+      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        {weakTopics.length === 0 ? (
+          <div style={cardStyle}>
+            <p style={emptyStyle}>
+              Rispondi ad almeno {MIN_ATTEMPTS_FOR_PRIORITY} domande dello stesso argomento per vedere qui le priorità di ripasso.
+            </p>
+          </div>
+        ) : (
+          weakTopics.map((t) => {
+            const meta = SUBJECTS[t.subject] || { color: "#9A9D9F", icon: Lightbulb };
+            const Icon = meta.icon;
+            return (
+              <div
+                key={t.topic}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "14px",
+                  backgroundColor: "#FFFFFF",
+                  border: "1.5px solid #E8E4DC",
+                  borderRadius: "10px",
+                  padding: "14px 16px",
+                }}
+              >
+                <div
+                  style={{
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "8px",
+                    backgroundColor: `${meta.color}14`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <Icon size={17} color={meta.color} strokeWidth={2} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: 600,
+                      color: "#1A1D1F",
+                      marginBottom: "4px",
+                    }}
+                  >
+                    {t.topic}
+                  </div>
+                  <div
+                    style={{
+                      height: "6px",
+                      backgroundColor: "#F0EEE9",
+                      borderRadius: "999px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: "100%",
+                        width: `${t.accuracy}%`,
+                        backgroundColor: t.accuracy < 50 ? "#C8632E" : meta.color,
+                        borderRadius: "999px",
+                      }}
+                    />
+                  </div>
+                </div>
+                <div
+                  style={{
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: "13px",
+                    color: "#6B6F73",
+                    minWidth: "90px",
+                    textAlign: "right",
+                  }}
+                >
+                  {t.correct}/{t.total} · {t.accuracy}%
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Simulation history */}
+      <StatLabel>
+        <History size={13} strokeWidth={2.5} />
+        Storico simulazioni
+      </StatLabel>
+      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        {sortedSimulations.length === 0 ? (
+          <div style={cardStyle}>
+            <p style={emptyStyle}>
+              Nessuna simulazione completata finora. Trovi la modalità Simulazione nel menu a sinistra.
+            </p>
+          </div>
+        ) : (
+          sortedSimulations.map((sim, i) => {
+            const prev = sortedSimulations[i + 1];
+            const delta = prev ? Math.round((sim.score - prev.score) * 10) / 10 : null;
+            const date = new Date(sim.timestamp).toLocaleDateString("it-IT", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            });
+            return (
+              <div
+                key={sim.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "16px",
+                  backgroundColor: "#FFFFFF",
+                  border: "1.5px solid #E8E4DC",
+                  borderRadius: "10px",
+                  padding: "14px 16px",
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: "12px",
+                    color: "#9A9D9F",
+                    minWidth: "72px",
+                  }}
+                >
+                  {date}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: "14px", fontWeight: 600, color: "#1A1D1F" }}>
+                    {sim.score}/90 punti
+                  </div>
+                  <div style={{ fontSize: "12px", color: "#9A9D9F", marginTop: "2px" }}>
+                    {sim.correct} corrette · {sim.wrong} sbagliate · {sim.blank} in bianco
+                  </div>
+                </div>
+                {delta !== null && (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "4px",
+                      fontFamily: "'IBM Plex Mono', monospace",
+                      fontSize: "12px",
+                      fontWeight: 600,
+                      color: delta > 0 ? "#5B8C5A" : delta < 0 ? "#C8632E" : "#9A9D9F",
+                    }}
+                  >
+                    {delta > 0 ? (
+                      <TrendingUp size={13} />
+                    ) : delta < 0 ? (
+                      <TrendingDown size={13} />
+                    ) : null}
+                    {delta > 0 ? `+${delta}` : delta}
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
    PLACEHOLDER SECTIONS (future steps)
    ============================================================ */
 
@@ -1696,11 +2225,13 @@ function PlaceholderSection({ icon: Icon, title, description, nextStep }) {
    STATS / DASHBOARD SECTION
    ============================================================ */
 
-function DashboardSection({ results }) {
+function DashboardSection({ results, onImport }) {
   const attempts = results.attempts || [];
   const total = attempts.length;
   const correct = attempts.filter((a) => a.correct).length;
   const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
+  const fileInputRef = useRef(null);
+  const [importMessage, setImportMessage] = useState(null);
 
   const bySubject = {};
   Object.keys(SUBJECTS).forEach((key) => {
@@ -1710,6 +2241,51 @@ function DashboardSection({ results }) {
       correct: subAttempts.filter((a) => a.correct).length,
     };
   });
+
+  const handleExport = () => {
+    const dataStr = JSON.stringify(results, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const date = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `imat-prep-backup-${date}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportClick = () => {
+    setImportMessage(null);
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const parsed = JSON.parse(event.target.result);
+        if (!parsed || !Array.isArray(parsed.attempts)) {
+          throw new Error("Formato non valido");
+        }
+        onImport({
+          attempts: parsed.attempts || [],
+          simulations: Array.isArray(parsed.simulations) ? parsed.simulations : [],
+        });
+        setImportMessage({ type: "ok", text: "Dati importati con successo." });
+      } catch (err) {
+        setImportMessage({
+          type: "error",
+          text: "Il file non sembra un backup valido di IMAT Prep.",
+        });
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = ""; // allow re-selecting the same file later
+  };
 
   return (
     <div style={{ maxWidth: "760px" }}>
@@ -1870,30 +2446,90 @@ function DashboardSection({ results }) {
         })}
       </div>
 
-      {total > 0 && (
+      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "28px" }}>
         <button
-          onClick={() => {
-            localStorage.removeItem(STORAGE_KEY);
-            window.location.reload();
-          }}
+          onClick={handleExport}
           style={{
             display: "inline-flex",
             alignItems: "center",
             gap: "6px",
-            marginTop: "28px",
             padding: "9px 14px",
             borderRadius: "8px",
             border: "1.5px solid #E8E4DC",
             backgroundColor: "#FFFFFF",
-            color: "#9A9D9F",
+            color: "#6B6F73",
             fontSize: "12px",
             fontWeight: 600,
             cursor: "pointer",
           }}
         >
-          <RotateCcw size={13} />
-          Azzera statistiche
+          <Download size={13} />
+          Esporta dati
         </button>
+
+        <button
+          onClick={handleImportClick}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "6px",
+            padding: "9px 14px",
+            borderRadius: "8px",
+            border: "1.5px solid #E8E4DC",
+            backgroundColor: "#FFFFFF",
+            color: "#6B6F73",
+            fontSize: "12px",
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
+        >
+          <Upload size={13} />
+          Importa dati
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="application/json"
+          onChange={handleFileChange}
+          style={{ display: "none" }}
+        />
+
+        {total > 0 && (
+          <button
+            onClick={() => {
+              localStorage.removeItem(STORAGE_KEY);
+              window.location.reload();
+            }}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              padding: "9px 14px",
+              borderRadius: "8px",
+              border: "1.5px solid #E8E4DC",
+              backgroundColor: "#FFFFFF",
+              color: "#9A9D9F",
+              fontSize: "12px",
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            <RotateCcw size={13} />
+            Azzera statistiche
+          </button>
+        )}
+      </div>
+
+      {importMessage && (
+        <p
+          style={{
+            marginTop: "10px",
+            fontSize: "12px",
+            color: importMessage.type === "ok" ? "#5B8C5A" : "#C8632E",
+          }}
+        >
+          {importMessage.text}
+        </p>
       )}
     </div>
   );
@@ -1906,13 +2542,14 @@ function DashboardSection({ results }) {
 const NAV_ITEMS = [
   { key: "dashboard", label: "Panoramica", icon: LayoutGrid },
   { key: "quiz", label: "Quiz", icon: BookOpen },
+  { key: "ripasso", label: "Ripasso mirato", icon: AlertTriangle },
   { key: "simulation", label: "Simulazione", icon: Timer },
   { key: "stats", label: "Statistiche", icon: LineChartIcon },
 ];
 
 export default function App() {
   const [activeSection, setActiveSection] = useState("quiz");
-  const [results, setResults] = useState({ attempts: [] });
+  const [results, setResults] = useState({ attempts: [], simulations: [] });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1924,10 +2561,29 @@ export default function App() {
 
   const handleAttemptComplete = useCallback((attempt) => {
     setResults((prev) => {
-      const updated = { attempts: [...(prev.attempts || []), attempt] };
+      const updated = {
+        ...prev,
+        attempts: [...(prev.attempts || []), attempt],
+      };
       saveResults(updated);
       return updated;
     });
+  }, []);
+
+  const handleSimulationRecorded = useCallback((simulation) => {
+    setResults((prev) => {
+      const updated = {
+        ...prev,
+        simulations: [...(prev.simulations || []), simulation],
+      };
+      saveResults(updated);
+      return updated;
+    });
+  }, []);
+
+  const handleImportResults = useCallback((imported) => {
+    setResults(imported);
+    saveResults(imported);
   }, []);
 
   return (
@@ -2025,7 +2681,7 @@ export default function App() {
             <br />
             La <strong style={{ color: "#6B6F73" }}>Simulazione</strong> usa solo le {SIMULATION_FULL_POOL.length} domande ufficiali, per restare fedele all'esame reale.
             <br />
-            Prossimi step: Lezioni teoriche, Statistiche avanzate.
+            Prossimi step: Lezioni teoriche.
           </div>
         </div>
       </aside>
@@ -2039,22 +2695,21 @@ export default function App() {
         ) : (
           <>
             {activeSection === "dashboard" && (
-              <DashboardSection results={results} />
+              <DashboardSection results={results} onImport={handleImportResults} />
             )}
             {activeSection === "quiz" && (
               <QuizSection onAttemptComplete={handleAttemptComplete} />
             )}
-            {activeSection === "simulation" && (
-              <SimulationSection onSimulationComplete={handleAttemptComplete} />
+            {activeSection === "ripasso" && (
+              <RipassoSection results={results} onAttemptComplete={handleAttemptComplete} />
             )}
-            {activeSection === "stats" && (
-              <PlaceholderSection
-                icon={LineChartIcon}
-                title="Statistiche avanzate"
-                description="Una versione più dettagliata della panoramica: andamento nel tempo, argomenti da rivedere con priorità, e confronto tra le simulazioni complete."
-                nextStep="→ In arrivo negli step successivi"
+            {activeSection === "simulation" && (
+              <SimulationSection
+                onSimulationComplete={handleAttemptComplete}
+                onSimulationRecorded={handleSimulationRecorded}
               />
             )}
+            {activeSection === "stats" && <StatsSection results={results} />}
           </>
         )}
       </main>
